@@ -1,0 +1,126 @@
+<!DOCTYPE html><html><head><title>Coming soon!</title><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/static/normalize.css"><link href="https://fonts.googleapis.com/css?family=Lato:300,400,700|Proza+Libre:400,700" rel="stylesheet"><style>html {font-size: 16px;color: #424254;background-color: white;font-family: 'Lato', sans-serif;font-weight: 300;}@media screen and (min-width: 50em) {html {font-size: 2vw;}}@media screen and (min-width: 60em) {html {font-size: 1.2em;}}a {color: #64908A;}.bg-primary {background-color: #424254;color: white;}.doc-head {display: table;width: 100%;height: 4em;}.doc-head-content {display: table-cell;vertical-align: middle;text-align: left;padding-left: 2em;}.site-head {display: table;height: 15em;width: 100%;}.site-head-content {display: table-cell;vertical-align: middle;text-align: center;}.container {box-sizing: border-box;width: 100%;padding: 0 2em;}@media screen and (min-width: 1024px) {.container {width: calc(1024px - (2 * 2em));padding: 0;margin: 0 auto;}}.col {margin: 0 auto;padding-top: 2em;}@media screen and (min-width: 700px) {.col {padding-top: 0;}.col-50 {display: inline-block;width: 50%;vertical-align: top;}}.text-center {text-align: center;}.centered-image-paragraph {text-align: center;}.img-responsive {max-width: 100%;}.img-penguin {background-color: #F4F5F7;border-radius: 16px;}.font-headline {font-family: 'Lato', sans-serif;font-weight: 300;}.page-section {width: 100%;padding-top: 2em;}</style></head><body data-penguin-built="true"><header class="doc-head bg-primary"><div class="doc-head-content"><strong>penguin.js</strong> - <span class="font-headline">docs</span></div></header><div class="container"><section class="page-section" data-component="MarkdownContent" data-props="{&quot;field&quot;:&quot;content&quot;,&quot;innerHTML&quot;:&quot;&quot;,&quot;tagName&quot;:&quot;section&quot;,&quot;className&quot;:&quot;page-section&quot;}"><h1 id="getting-started-with-penguin-js">Getting started with penguin.js</h1>
+<p>It&apos;s easy to get started. penguin.js embraces the filesystem as its API.</p>
+<h2 id="create-and-initialize-a-project-folder">Create and initialize a project folder</h2>
+<p>penguin.js treats a website as a node-module. So create a directory and initialize it with a
+<code>package.json</code>.</p>
+<pre><code>$ mkdir my-site
+$ cd my-site
+$ touch package.json
+</code></pre><p>Now open the <code>package.json</code> in your favorite editor and add the following contents.</p>
+<pre><code class="lang-json">{
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;penguin serve&quot;
+  },
+  &quot;penguin&quot;: {
+    &quot;languages&quot;: [&quot;en&quot;],
+    &quot;components&quot;: {
+      &quot;Inplace&quot;: &quot;penguin.js/inplace&quot;,
+      &quot;Link&quot;: &quot;penguin.js/link&quot;
+    }
+  }
+}
+</code></pre>
+<p>Since penguin.js supports multilanguage websites you have to specify at least one language that you want
+your website to be in. This is set as you can see in the snippet using <code>penguin.languages</code>. The
+<code>penguin.components</code> entry is a hash that lists all our installed third party components. penguin.js
+ships with two builtin components that we just included. We&apos;ll see later what we can use them for.</p>
+<p>Last but not least we have to install penguin.js. Make sure that you use node v6 or higher.</p>
+<pre><code>$ npm i -S penguin.js
+</code></pre><h2 id="start-the-development-server">Start the development server</h2>
+<p>Now that you created your project folder, go and start the development server using the following
+command:</p>
+<pre><code>$ npm start
+</code></pre><p>Maybe you noticed that this runs the <code>start</code> script that you declared in your <code>package.json</code> in the
+previous step. penguin.js makes heavy use of these scripts like we&apos;ll see later. You should see
+output in your terminal that looks like this:</p>
+<pre><code>&gt; @ start /Users/domachine/Desktop/apps/github.com/domachine/my-site
+&gt; penguin serve
+
+components.js written
+&gt; Ready on port 3000
+331941 bytes written (1.74 seconds)
+</code></pre><h2 id="your-first-page">Your first page</h2>
+<p>If you visit <a href="http://localhost:3000/">http://localhost:3000/</a> you&apos;ll see a 404 page. That seems bad but it&apos;s good! It means
+that you&apos;re ready to develop your website now! Creating a page in penguin.js is easy. Just create an
+html file like this:</p>
+<pre><code>$ mkdir pages
+$ touch pages/index.html
+</code></pre><p>Now edit this file and add some content:</p>
+<pre><code class="lang-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My first page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Home&lt;/h1&gt;
+    {@link href=&quot;/about&quot;}Link to about{/link}
+    {@component name=&quot;Inplace&quot; tagName=&quot;p&quot; field=&quot;description&quot;}
+      This text is editable
+    {/component}
+    &lt;script src=&apos;/static/client.js&apos;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>As you can see, we&apos;re using some special tags here:</p>
+<pre><code>{@link href=&quot;/about&quot;}Link to about{/link}
+</code></pre><p>These are <a href="http://www.dustjs.com">dustjs</a> helpers that we use to mount components into our site.
+If you checkout the page on your <a href="http://localhost:3000/">http://localhost:3000/</a> you&apos;ll see that the <code>&lt;p&gt;</code> is editable.</p>
+<h2 id="adding-a-save-button">Adding a save button</h2>
+<p>It&apos;s nice, that we have an editable element in about 5 minutes. But how to save it? Let&apos;s add a save
+button for which we have a component. We&apos;re all about components :-). The first step is to reference it in your <code>package.json</code>.</p>
+<pre><code class="lang-json">&quot;penguin&quot;: {
+  &quot;languages&quot;: [&quot;en&quot;],
+  &quot;components&quot;: {
+    &quot;Inplace&quot;: &quot;penguin.js/inplace&quot;,
+    &quot;Link&quot;: &quot;penguin.js/link&quot;,
+    &quot;SaveButton&quot;: &quot;penguin.js/save_button&quot;
+  }
+}
+</code></pre>
+<p>Then add it to your page.</p>
+<pre><code class="lang-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My first page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Home&lt;/h1&gt;
+    {@component name=&quot;SaveButton&quot; tagName=&quot;button&quot;}Save it!{/component}
+    {@link href=&quot;/about&quot;}Link to about{/link}
+    {@component name=&quot;Inplace&quot; tagName=&quot;p&quot; field=&quot;description&quot;}
+      This text is editable
+    {/component}
+    &lt;script src=&apos;/static/client.js&apos;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>If you now edit your <code>p</code> and press save. Just refresh the page and you&apos;ll see that it&apos;s persistent.</p>
+<h2 id="add-a-save-indicator-to-your-page">Add a save indicator to your page</h2>
+<p>Another missing part is a response to the user if the site was saved successfully. In penguin.js
+this is easy and so flexible &apos;cause hey: We&apos;ve got a component. Again reference it in your
+package.json. It&apos;s called <code>SavedIndicator</code>.</p>
+<pre><code class="lang-json">&quot;penguin&quot;: {
+  &quot;languages&quot;: [&quot;en&quot;],
+  &quot;components&quot;: {
+    &quot;Inplace&quot;: &quot;penguin.js/inplace&quot;,
+    &quot;Link&quot;: &quot;penguin.js/link&quot;,
+    &quot;SaveButton&quot;: &quot;penguin.js/save_button&quot;,
+    &quot;SavedIndicator&quot;: &quot;penguin.js/saved_indicator&quot;
+  }
+}
+</code></pre>
+<p>This component has a simple functionality. It defines an html element which is shown when the page
+was saved successfully. Checkout the <code>tagName</code> and the <code>className</code> prop to customize it.</p>
+<pre><code>{@component name=&quot;SavedIndicator&quot; tagName=&quot;div&quot; className=&quot;alert alert-success&quot;}
+  Hey, just wrote your stuff to disk, mate!
+{/component}
+</code></pre><h2 id="go-and-try-it">Go and try it</h2>
+<p>This is just the start. We&apos;re currently working on making it easy to deploy your site. Stay tuned:
+We&apos;re moving quickly!</p>
+<p>For now you can build your website statically using the following script in your <code>package.json</code>:</p>
+<pre><code class="lang-json">&quot;scripts&quot;: {
+  &quot;build&quot;: &quot;penguin pack &amp;&amp; penguin build&quot;
+}
+</code></pre>
+<p>Then run <code>npm run build</code>. This takes your saved data and builts your website statically to <code>docs/</code>.</p>
+</section></div><script src="/static/client.js"></script></body></html>
